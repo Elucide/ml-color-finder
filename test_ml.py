@@ -7,13 +7,16 @@ def truncated_normal(mean = 0, sd = 1, low = 0, upp = 10):
     return truncnorm((low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
 
 def activate(weights, inputs):
-    activation = weights[-1]
+    activation = np.array([weights[-1]], ndmin=1)
+#    activation[0] = weights[-1]
+#    print("len of input is ", str(len(inputs)))
     for i in range(len(weights) - 1):
-        activation += weights[i] * inputs[i]
+#        print("i is", str(i))
+        activation[0] += weights[i] * np.float64(inputs[i])
     return (activation)
 
 def transfer(activation):
-    return (1.0 / (1.0 + exp(- activation)))
+    return (1.0 / (1.0 + np.exp(- activation)))
 
 #def forward_propagation(network, )
 
@@ -56,17 +59,35 @@ class Nnetwork:
 
     def run(self, input_vector):
         """ RUNNING THE NETWORK WITH AN IMPUT VECTOR, CAN BE A TUPLE, LIST, OR NDARRAY """
-#        input_vector = np.array(input_vector, ndmin=2).#T
+                # Turn the input vector into a column vector:
+        input_vector = np.array(input_vector, ndmin=2).T
+        # activation_function() implements the expit function,
+        # which is an implementation of the sigmoid function:
+        input_hidden = activation_function(self.weights_in_hidden @   input_vector)
+        output_vector = activation_function(self.weights_hidden_out @ input_hidden)
+#i        return output_vector 
+#        input_vector = np.array(input_vector, ndmin=2)
 #        input_hidden = activation_function(self.weights_in_hidden @ input_vector)
 #        output_vector = activation_function(self.weights_hidden_out @    input_hidden)
-        print("nrn_hidden[1] =", self.weights_in_hidden[1])
-#        for nrn in self.nrn_hidden:
-            
-#        return (output_vector)
+        print("type of output_vector[0] is", str(type(output_vector[0])))
+        return (output_vector)
+
+    def lcd_run(self, input_vector):
+#        print("input vector is =", input_vector)
+        output_vector = np.array([], ndmin=2)
+        mid_vector = np.array([], ndmin=2)
+        for i in range(self.n_hidden_nrn):
+            np.append(mid_vector, transfer(activate(self.weights_in_hidden[i], input_vector)))
+        for i in range(self.n_out_nrn):
+            np.append(output_vector, transfer(activate(self.weights_hidden_out[i], mid_vector)))
+        return (output_vector)
 
 
-simple_network = Nnetwork(n_in_nrn = 3, n_out_nrn = 2, n_hidden_nrn = 4, learning_rate = 0.6)
+    
 
-simple_network.monitor()
+simple_network = Nnetwork(n_in_nrn = 3, n_out_nrn = 3, n_hidden_nrn = 4, learning_rate = 0.6)
 
-print(str(simple_network.run([(3, 4, 5)])))
+#simple_network.monitor()
+
+print("scipy output", str(simple_network.run([(3, 4, 5)])))
+print("lcd output", str(simple_network.lcd_run([(3, 4, 5)])))

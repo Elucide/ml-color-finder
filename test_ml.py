@@ -23,6 +23,22 @@ class Nnetwork:
         X = truncated_normal(mean=0, sd=1, low=-rad, upp=rad)
         self.weights_hidden_out = X.rvs((self.n_out_nrn, self.n_hidden_nrn))
         
+    def monitor(self):
+        """MONITOR MEURAL NETWORK STATE"""
+        print("-----------BEGIN MONITOR-----------\n")
+        print("actual neural network has", str(self.n_hidden_nrn), "neurons\nin his hidden layer\n\nTHE WEIGHTS OF THOSE NEURON ARE:")
+        i = 0;
+        print("neuron of beetween in and hidden layer")
+        for nrn in self.weights_in_hidden:
+            print("neuron #" + str(i), str(nrn))
+            i += 1
+        print("\nneuron of beetween hidden and out layer")
+        i = 0;
+        for nrn in self.weights_hidden_out:
+            print("neuron #" + str(i), str(nrn))
+            i += 1
+        print("\n------------END MONITOR------------")
+
     def train(self, input_vector, target_vector):
         """ LEARNING METHOD (BACKPROPAGATION) """
         pass # flemme
@@ -35,7 +51,8 @@ class Nnetwork:
         return (output_vector)
 
 
-simple_network = Nnetwork(n_in_nrn = 2, n_out_nrn = 2, n_hidden_nrn = 4, learning_rate = 0.6)
+simple_network = Nnetwork(n_in_nrn = 3, n_out_nrn = 2, n_hidden_nrn = 4, learning_rate = 0.6)
 
+simple_network.monitor()
 
-print(str(simple_network.run([(3, 4)])))
+print(str(simple_network.run([(3, 4, 5)])))

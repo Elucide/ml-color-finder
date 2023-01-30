@@ -6,6 +6,17 @@ def truncated_normal(mean = 0, sd = 1, low = 0, upp = 10):
     print (str(truncnorm((low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)))
     return truncnorm((low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
 
+def activate(weights, inputs):
+    activation = weights[-1]
+    for i in range(len(weights) - 1):
+        activation += weights[i] * inputs[i]
+    return (activation)
+
+def transfer(activation):
+    return (1.0 / (1.0 + exp(- activation)))
+
+#def forward_propagation(network, )
+
 class Nnetwork:
     def __init__(self, n_in_nrn, n_out_nrn, n_hidden_nrn, learning_rate):
         self.n_in_nrn = n_in_nrn
@@ -45,10 +56,13 @@ class Nnetwork:
 
     def run(self, input_vector):
         """ RUNNING THE NETWORK WITH AN IMPUT VECTOR, CAN BE A TUPLE, LIST, OR NDARRAY """
-        input_vector = np.array(input_vector, ndmin=2).T
-        input_hidden = activation_function(self.weights_in_hidden @ input_vector)
-        output_vector = activation_function(self.weights_hidden_out @    input_hidden)
-        return (output_vector)
+#        input_vector = np.array(input_vector, ndmin=2).#T
+#        input_hidden = activation_function(self.weights_in_hidden @ input_vector)
+#        output_vector = activation_function(self.weights_hidden_out @    input_hidden)
+        print("nrn_hidden[1] =", self.weights_in_hidden[1])
+#        for nrn in self.nrn_hidden:
+            
+#        return (output_vector)
 
 
 simple_network = Nnetwork(n_in_nrn = 3, n_out_nrn = 2, n_hidden_nrn = 4, learning_rate = 0.6)

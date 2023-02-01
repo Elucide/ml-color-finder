@@ -7,12 +7,14 @@ def truncated_normal(mean = 0, sd = 1, low = 0, upp = 10):
     return truncnorm((low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
 
 def activate(weights, inputs):
-    activation = np.array([weights[-1]], ndmin=1)
-#    activation[0] = weights[-1]
+    activation = np.empty([0], dtype=np.float64 , like=None)
+#    activation = np.insert(activation, 0, weights[-1])
+    activation = np.append(activation, weights[-1])
 #    print("len of input is ", str(len(inputs)))
+    print ("activation is", str(activation))
     for i in range(len(weights) - 1):
 #        print("i is", str(i))
-        activation[0] += weights[i] * np.float64(inputs[i])
+        activation = np.insert(activation, 0, activation[0] + weights[i] * np.float64(inputs[i]))
     return (activation)
 
 def transfer(activation):
@@ -27,6 +29,9 @@ class Nnetwork:
         self.n_hidden_nrn = n_hidden_nrn
         self.learning_rate = learning_rate # wtf is that ?
         self.create_weight_matrices()
+
+    def __del__(self):
+        print ("neural network destroyed !")
 
     def create_weight_matrices(self):
         """ INIT WEIGHT MATRICES WITH RANDOM VALUES< WILL BE USEFUL WHEN I'LL MAKE THE BACKPROPAGATION"""
